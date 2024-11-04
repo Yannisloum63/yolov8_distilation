@@ -80,17 +80,21 @@ class CWDLoss(nn.Module):
         for idx, (s, t) in enumerate(zip(y_s, y_t)):
             assert s.shape == t.shape
             N, C, H, W = s.shape
+            #print(f'\nN, C, H, W, {N, C, H, W}\n')
 
             # normalize in channel dimension
             softmax_pred_T = F.softmax(t.view(-1, W * H) / self.tau, dim=1)
+            #print(f'\nsoftmax_pred_T, {softmax_pred_T}\n')
 
             logsoftmax = torch.nn.LogSoftmax(dim=1)
             cost = torch.sum(
                 softmax_pred_T * logsoftmax(t.view(-1, W * H) / self.tau) -
                 softmax_pred_T * logsoftmax(s.view(-1, W * H) / self.tau)) * (self.tau ** 2)
-
+            #print(f'\nCost: {cost}\n')
             losses.append(cost / (C * N))
+            #print(f'\nLosses: {losses}\n')
         loss = sum(losses)
+        print(f'\nLoss, {loss}\n')
         return loss
 
 class MGDLoss(nn.Module):
