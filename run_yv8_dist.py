@@ -1,15 +1,16 @@
 from ultralytics import YOLO
 
-teacher_model = YOLO("yolov8l.pt")
+teacher_model = YOLO("best_l_trained_on_3cls.pt")
 
-student_model = YOLO("yolov8s.pt")
+student_model = YOLO("best_s_trained_on_3cls.pt")
 
 student_model.train(
     data="coco_3cls_mini.yaml",
     teacher=teacher_model.model, # None if you don't wanna use knowledge distillation
     distillation_loss="cwd",
-    epochs=100,
-    batch=2,
-    workers=4,
+    epochs=800,
+    batch=16,
+    workers=8,
     exist_ok=True,
+    name='13_11_test'
 )
